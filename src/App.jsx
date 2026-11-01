@@ -3,6 +3,8 @@ import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import TablePage from './components/TablePage';
 import FormPage from './components/FormPage';
+import ApiDataPage from './components/ApiDataPage'; // 1. Import komponen API
+import Footer from './components/Footer';
 
 export default function App() {
   const [activePage, setActivePage] = useState('dashboard');
@@ -13,7 +15,6 @@ export default function App() {
     if (savedData) {
       return JSON.parse(savedData);
     } else {
-      // Data awal jika localStorage masih kosong
       return [
         { id: 1, name: 'Lapangan Padel A', category: 'Indoor', status: 'Tersedia' },
         { id: 2, name: 'Lapangan Padel B', category: 'Outdoor', status: 'Disewa' },
@@ -22,32 +23,35 @@ export default function App() {
     }
   });
 
-  // Menyimpan data ke localStorage setiap kali ada perubahan pada dataTable
   useEffect(() => {
     localStorage.setItem('padel_data', JSON.stringify(dataTable));
   }, [dataTable]);
 
-  // Fungsi untuk menambahkan data baru dari form
   const handleAddData = (newData) => {
     const newEntry = {
-      id: Date.now(), // Menggunakan timestamp agar ID unik
+      id: Date.now(),
       name: newData.name,
       category: newData.category,
       status: 'Tersedia'
     };
     setDataTable([...dataTable, newEntry]);
-    setActivePage('table'); // Otomatis pindah ke halaman tabel setelah disimpan
+    setActivePage('table');
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 font-sans">
+    <div className="min-h-screen bg-gray-100 font-sans flex flex-col justify-between">
       <Navbar setActivePage={setActivePage} />
 
-      <main className="max-w-7xl mx-auto py-6 px-4">
+      <main className="max-w-7xl mx-auto py-6 px-4 flex-grow w-full">
         {activePage === 'dashboard' && <Dashboard />}
         {activePage === 'table' && <TablePage dataTable={dataTable} />}
         {activePage === 'form' && <FormPage onAddData={handleAddData} />}
+        
+        {/* 2. Kondisi untuk menampilkan halaman API Data */}
+        {activePage === 'api' && <ApiDataPage />}
       </main>
+
+      <Footer />
     </div>
   );
 }
