@@ -1,0 +1,27 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELLED
+}
+
+model CourtBooking {
+  id         Int           @id @default(autoincrement())
+  courtName  String        @map("court_name")
+  playerName String        @map("player_name")
+  bookingAt  DateTime      @map("booking_at")
+  price      Int
+  status     BookingStatus @default(PENDING)
+  createdAt  DateTime      @default(now()) @map("created_at")
+  updatedAt  DateTime      @updatedAt @map("updated_at")
+
+  @@map("court_bookings")
+}
